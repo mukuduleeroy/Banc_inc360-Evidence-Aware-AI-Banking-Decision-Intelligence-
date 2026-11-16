@@ -1,0 +1,9 @@
+# Priorities before the November 20, 2026 virtual presentation
+
+1. Complete a manual browser walkthrough on the presentation machine: real Customer 360, synthetic failure cases, eligible queue, required reason and session audit. Rehearse with masked identifiers and avoid distributing customer files.
+2. Implement a reproducible historical evaluation: January 1 training and July 1 holdout observations, 180-day prior-event eligibility, 90-day future inactivity labels, strict observation-time features and explicit customer cohort definitions. Confirm transaction coverage through September 29, 2026 before evaluating the holdout. Reproduce all six reported metrics or clearly retain them as reported only. Do not approve logistic regression without validation and policy sign-off.
+3. Add durable audit storage and authenticated staff identity before any operational use. Session logs are adequate only for the demonstration. Define access and retention rules for local banking artifacts.
+4. Add provenance and validation metadata to each imported customer feature row. The UI currently trusts generated feature files and the engine's default linkage/date flags. Reject unknown or stale feature sources before real recommendations.
+5. Obtain bank review of qualifying transaction definitions, multi-account restriction handling and the savings discussion rationale. Keep history thresholds unchanged until authorized. Add reviewed rules before supporting other products.
+6. Improve manager workflow with explicit queue selection, pagination and full-population ranking; the current queue examines 1,500 candidates and the detail selector shows 250 filtered customers. Distinguish session audit from durable logged decisions during the presentation.
+7. Refresh to an installed supported Python version (prefer 3.12/3.13), reinstall from compatible pins, rerun tests and freeze that platform's dependency lock. Add CI once repository hosting is configured.
