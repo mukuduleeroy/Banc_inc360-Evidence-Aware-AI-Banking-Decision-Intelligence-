@@ -12,3 +12,7 @@ __pycache__/
 *.sqlite*
 outputs/
 *.log
+
+# SQLite sidecars also remain private if a custom database is outside outputs.
+*.db-wal
+*.db-shm

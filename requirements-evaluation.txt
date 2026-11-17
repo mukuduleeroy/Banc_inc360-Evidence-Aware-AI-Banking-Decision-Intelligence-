@@ -1,0 +1,6 @@
+# Optional offline evaluation only. The Streamlit app does not import these models.
+# Tested with Python 3.9.6 and the existing application environment.
+scikit-learn==1.6.1
+scipy==1.13.1
+joblib==1.5.2
+threadpoolctl==3.6.0
