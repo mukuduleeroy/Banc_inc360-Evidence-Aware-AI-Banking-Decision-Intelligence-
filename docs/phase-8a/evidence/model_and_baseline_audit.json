@@ -1,0 +1,195 @@
+{
+  "source_sha256": "4a7919a7a98f8340d2d7589ec8cfdbe352742686df97cb6e8d6bd58d93fd4e1b",
+  "source_and_manifest_and_evaluation_source_hashes_match": true,
+  "recorded_full_suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "443",
+      "time": "58.310",
+      "timestamp": "2026-11-18T11:08:44.235596+02:00",
+      "hostname": "Leeroy-Jr-MacBook.local"
+    }
+  ],
+  "recorded_gate_combinations": 96,
+  "recorded_acceptance_status": "PASS",
+  "recorded_source_freshness": {
+    "source_files_verified": 72,
+    "source_unchanged_during_and_after_run": true,
+    "junit_matches_run_manifest": true,
+    "started_utc": "2026-11-18T09:08:43.681290+00:00",
+    "finished_utc": "2026-11-18T09:09:43.312971+00:00"
+  },
+  "artifact_version": "historical-inactivity-v1",
+  "models": {
+    "recency_only": {
+      "roc_auc": 0.940629920889136,
+      "pr_auc_average_precision": 0.9686487071624262,
+      "pr_auc_trapezoidal": 0.9697762500886098,
+      "precision_at_k": 1.0,
+      "lift_at_k": 1.6855680760880802,
+      "requested_k": 500,
+      "effective_k": 500,
+      "cohort_size": 32609,
+      "target_prevalence": 0.5932717961299028,
+      "training_timestamp_utc": "2026-11-16T12:10:29.406481+00:00",
+      "score_sha256": "db56fe910f35de81ac18f6c8896d97b13170460dda3abcabcb20fb36c4fe5081",
+      "training_seconds": 0.0,
+      "total_evaluation_seconds": 0.03141383299998779,
+      "hyperparameters": {}
+    },
+    "logistic_regression": {
+      "roc_auc": 0.9652071680856101,
+      "pr_auc_average_precision": 0.9823967913868079,
+      "pr_auc_trapezoidal": 0.982396445377427,
+      "precision_at_k": 1.0,
+      "lift_at_k": 1.6855680760880802,
+      "requested_k": 500,
+      "effective_k": 500,
+      "cohort_size": 32609,
+      "target_prevalence": 0.5932717961299028,
+      "training_timestamp_utc": "2026-11-16T12:10:29.437892+00:00",
+      "score_sha256": "ea9668e0bea09584da4178d7bff0315e9fe794354ae8d0bb1532fab481f90fd8",
+      "training_seconds": 0.03202916700000458,
+      "total_evaluation_seconds": 0.061090875000004985,
+      "hyperparameters": {
+        "preprocessing": "log1p all five features; StandardScaler fitted only on training",
+        "C": 1.0,
+        "max_iter": 1000,
+        "solver": "lbfgs",
+        "class_weight": null,
+        "random_state": 42
+      }
+    },
+    "histogram_gradient_boosting": {
+      "roc_auc": 0.9421768272016152,
+      "pr_auc_average_precision": 0.9654447685114936,
+      "pr_auc_trapezoidal": 0.9672029977895169,
+      "precision_at_k": 1.0,
+      "lift_at_k": 1.6855680760880802,
+      "requested_k": 500,
+      "effective_k": 500,
+      "cohort_size": 32609,
+      "target_prevalence": 0.5932717961299028,
+      "training_timestamp_utc": "2026-11-16T12:10:29.498989+00:00",
+      "score_sha256": "bf624d5e28ca90721849f35e3a8be0ae8d48bbf5f658c3fb8689603974c8b0a0",
+      "training_seconds": 0.3240644159999988,
+      "total_evaluation_seconds": 0.46958616599999914,
+      "hyperparameters": {
+        "categorical_features": "from_dtype",
+        "class_weight": null,
+        "early_stopping": false,
+        "interaction_cst": null,
+        "l2_regularization": 1.0,
+        "learning_rate": 0.08,
+        "loss": "log_loss",
+        "max_bins": 255,
+        "max_depth": null,
+        "max_features": 1.0,
+        "max_iter": 150,
+        "max_leaf_nodes": 15,
+        "min_samples_leaf": 30,
+        "monotonic_cst": null,
+        "n_iter_no_change": 10,
+        "random_state": 42,
+        "scoring": "loss",
+        "tol": 1e-07,
+        "validation_fraction": 0.1,
+        "verbose": 0,
+        "warm_start": false
+      }
+    }
+  },
+  "configuration": {
+    "train_cutoff": "2026-01-01",
+    "holdout_cutoff": "2026-07-01",
+    "observation_days": 180,
+    "target_days": 90,
+    "minimum_events": 2,
+    "seed": 42,
+    "top_k": 500
+  },
+  "target_definition": "1 iff zero known valid non-SERVICE FEE events in [cutoff,cutoff+90 days); observed inactivity, not churn/account closure",
+  "features": {
+    "recency_days": "Floor days since latest qualifying event strictly before cutoff; earlier than window allowed.",
+    "qualifying_events_180d": "Qualifying events in [cutoff-180 days, cutoff).",
+    "events_90d": "Qualifying events in [cutoff-90 days, cutoff).",
+    "transaction_volume_180d_usd": "Sum absolute finite USD amounts in observation window; not revenue or profit.",
+    "deposit_events_180d": "CASH_DEPOSIT events in observation window."
+  },
+  "train": {
+    "cutoff": "2026-01-01",
+    "customers": 41259,
+    "positives": 8022,
+    "prevalence": 0.19443030611502946,
+    "features_sha256": "e3a20c27fbf026d7756acd8f588a70596bf221aa40ccf7dfd0983e76bd87f78c",
+    "labels_sha256": "0612fb99573f946fbe1372c1bea9d7a78c48b1b00af5d8d47444eb9a42053d40"
+  },
+  "holdout": {
+    "cutoff": "2026-07-01",
+    "customers": 32609,
+    "positives": 19346,
+    "prevalence": 0.5932717961299028,
+    "features_sha256": "a302ced257008faa7849d04db9d46fc6377cfd8db098e8f09cd99b315d89de68",
+    "labels_sha256": "58f690ab4bb447f48ba491ff38d40be4e82665c5a019221d19fb6a0876c2b281"
+  },
+  "shared_customers": 32609,
+  "dependencies": {
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.6.1",
+    "scipy": "1.13.1",
+    "threadpoolctl": "3.6.0",
+    "joblib": "1.5.2"
+  },
+  "uncertainty": {
+    "method": "paired customer percentile bootstrap; fixed fitted models; conditional on one supplied extract",
+    "repeats": 200,
+    "seed": 42,
+    "models": {
+      "recency_only": {
+        "roc_auc": [
+          0.9383293699155907,
+          0.9428803370261358
+        ],
+        "pr_auc_average_precision": [
+          0.9675024929391938,
+          0.9699279758436046
+        ]
+      },
+      "logistic_regression": {
+        "roc_auc": [
+          0.9633875389013113,
+          0.9671791776723224
+        ],
+        "pr_auc_average_precision": [
+          0.9815560987224904,
+          0.9833570867388539
+        ]
+      },
+      "histogram_gradient_boosting": {
+        "roc_auc": [
+          0.9398148307892654,
+          0.9443417015678898
+        ],
+        "pr_auc_average_precision": [
+          0.9640391466281171,
+          0.9668594908880355
+        ]
+      }
+    },
+    "recency_minus_hgb_roc_auc_95pct": [
+      -0.00337464521500965,
+      0.00041441416981727894
+    ]
+  },
+  "repeat_metrics_and_score_hashes_match": {
+    "recency_only": true,
+    "logistic_regression": true,
+    "histogram_gradient_boosting": true
+  },
+  "saved_fitted_model_artifacts": [],
+  "historical_models_retrained_during_audit": false
+}

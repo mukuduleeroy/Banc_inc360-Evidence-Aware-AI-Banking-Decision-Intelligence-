@@ -55,9 +55,9 @@ previous=os.environ.get('BANCINC_FEATURES_PATH')
 try:
     os.environ['BANCINC_FEATURES_PATH']=str(Path(tempfile.gettempdir())/'bancinc-intentionally-missing.csv')
     missing=AppTest.from_file(str(root/'app.py'),default_timeout=60).run()
-    assert not missing.exception and len(missing.warning)==1
+    assert not missing.exception and any('DATASET_UNAVAILABLE' in e.value for e in missing.error)
 finally:
     if previous is None:os.environ.pop('BANCINC_FEATURES_PATH',None)
     else:os.environ['BANCINC_FEATURES_PATH']=previous
-results['missing_file_fallback_explicit']=True
+results['missing_file_fails_without_demo_fallback']=True
 (root/'outputs/ui_verification.json').write_text(json.dumps(results,indent=2));print(json.dumps(results,indent=2))

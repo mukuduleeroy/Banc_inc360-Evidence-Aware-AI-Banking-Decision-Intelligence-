@@ -1,0 +1,14 @@
+{
+  "scope": "Frozen verified local technical baseline; not bank authorization or permission to share data. Only aggregate counts and fingerprints; no raw records.",
+  "feature_sha256": "a66035aade8bf2aa7be0bb4f50481211391ffe9473bce8b3afc60b9400498993",
+  "manifest_sha256": "e7498a20977dae9fe247c9ad4379ac0a62c74f09e75d3b8896d39861a3a60a7c",
+  "policy_sha256": "fb55bf63040711dd15f03005cd298472743899c186e59315396422a0d970f1ae",
+  "customers": 50000,
+  "counts": {
+    "SUPPORTED": 2052,
+    "CAUTION": 20,
+    "ABSTAIN": 47928
+  },
+  "decision_fingerprint": "7b0b071c768b393a51d249fedf45937b5bd17f845a72dcaa23a5447c2b6fc0e3",
+  "fingerprint_definition": "SHA256 of in-memory sorted customer-key, outcome, exact priority, reason-code-list and invalid-evidence flag; no raw identifiers are exported."
+}

@@ -11,7 +11,17 @@ from ui_shell import workspace,ROOT,REAL
 from data_access import manifest_path
 
 
-def database_path():return Path(os.environ.get('BANCINC_AUDIT_DB',str(ROOT/'outputs/review_audit.sqlite3'))).expanduser()
+from deployment_data import audit_configuration,DeploymentError
+
+def database_path():return audit_configuration()[0]
+
+def storage_notice():
+    try:cloud=audit_configuration()[1]
+    except DeploymentError as exc:
+        st.error(exc.code+': '+str(exc));return
+    if cloud:
+        st.warning('EPHEMERAL CLOUD REVIEW STORAGE — local SQLite may be lost on restart or redeployment. Cloud durability is not verified. Demo attribution only; do not enter personal information.')
+    else:st.caption('LOCAL SQLITE REVIEW STORAGE — persists on this local filesystem; retain backups. Not authenticated bank approval.')
 def store():return AuditStore(database_path())
 def service(storage):return ReviewService(storage,features_path=st.session_state['_feature_path'])
 
@@ -30,7 +40,7 @@ def queue_status(frame,index):
         result['last_demo_reviewer']=[cases.get(alias,{}).get('last_reviewer_id') for alias in result.customer]
         result['latest_review_action']=[cases.get(alias,{}).get('last_action') for alias in result.customer]
         result['review_timestamp_utc']=[cases.get(alias,{}).get('updated_utc') for alias in result.customer]
-    except (AuditError,OSError):
+    except (AuditError,DeploymentError,OSError):
         st.error('Audit storage is unavailable. No durable review action can be saved.')
         result['case_status']='AUDIT_UNAVAILABLE'
     return result
@@ -39,7 +49,8 @@ def render_workflow(index,alias):
     if workspace().mode!=REAL:
         st.caption('Durable real-case review is unavailable in synthetic or simulation mode.');return
     st.subheader('Durable human review — local prototype only')
-    st.caption('SQLite-backed review events survive restarts. Demo reviewer labels are unverified attribution, not login, identity verification or bank authorization. No review outcome initiates outreach or a financial action.')
+    storage_notice()
+    st.caption('SQLite-backed local review events survive restarts on retained storage. Demo reviewer labels are unverified attribution, not login, identity verification or bank authorization. No review outcome initiates outreach or a financial action.')
     try:
         storage=store();reviews=service(storage);context=reviews.current(alias);case=storage.case_for_customer(alias)
         reviewers=storage.reviewers();labels={r['reviewer_id']:r['reviewer_id']+' · '+r['display_name']+' (unverified)' for r in reviewers}
@@ -86,12 +97,13 @@ def render_workflow(index,alias):
         st.subheader('Case audit timeline — complete sequence')
         history=storage.timeline(case['case_id'])
         st.dataframe(pd.DataFrame(history),hide_index=True,width='stretch',key='case_timeline')
-    except AuditError as exc:st.error(exc.code+': '+str(exc))
+    except (AuditError,DeploymentError) as exc:st.error(exc.code+': '+str(exc))
     except OSError:st.error('AUDIT_STORAGE_UNAVAILABLE: Durable storage cannot be accessed; no success is recorded.')
 
 
 def render_audit_history(index):
     st.subheader('Durable review audit')
+    storage_notice()
     st.caption('Append-only application events and immutable snapshots in local SQLite; not tamper-proof storage or authenticated bank approval. Database owner access remains an administrative trust boundary.')
     try:
         storage=store();summary=storage.summary()
@@ -111,5 +123,5 @@ def render_audit_history(index):
         st.caption('Snapshot SHA-256: '+snapshot['snapshot_hash'])
         st.caption(TRACEABILITY_NOTICE)
         st.dataframe(pd.DataFrame(snapshot['evidence_references']),hide_index=True,width='stretch',key='durable_references')
-    except AuditError as exc:st.error(exc.code+': '+str(exc))
+    except (AuditError,DeploymentError) as exc:st.error(exc.code+': '+str(exc))
     except OSError:st.error('AUDIT_STORAGE_UNAVAILABLE: Durable audit history cannot be accessed.')

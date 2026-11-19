@@ -1,0 +1,32 @@
+{
+  "source_labels_row_counts": {
+    "account_type": {
+      "Fixed Deposit": 209715,
+      "Foreign Currency": 209715,
+      "Call Deposit": 209715,
+      "Savings": 209715,
+      "Current": 209715
+    },
+    "loan_types": {
+      "<missing>": 786431,
+      "Personal Loan": 139819,
+      "Mortgage": 87389,
+      "SME Working Capital": 34936
+    },
+    "card_types": {
+      "<missing>": 786431,
+      "Credit": 262144
+    },
+    "card_schemes": {
+      "<missing>": 786431,
+      "Visa": 262144
+    }
+  },
+  "unique_source_accounts": 98475,
+  "account_type_or_open_date_conflicts": 0,
+  "invalid_account_open_dates": 0,
+  "earliest_account_open_date": "2016-01-15 00:00:00",
+  "latest_account_open_date": "2022-01-15 00:00:00",
+  "exchange_rate_equals_provided_mid_max_absolute_difference": 0.0,
+  "opening_event_target_assessment": "Account opening date and type are available, but complete longitudinal account/product coverage and approved product mapping are not demonstrated; this is not verified product adoption/offer response."
+}
