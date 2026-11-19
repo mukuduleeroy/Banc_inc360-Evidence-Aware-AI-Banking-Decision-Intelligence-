@@ -71,6 +71,12 @@ def provenance(work):
             st.write('Historical cutoff',work.index.cutoff)
             st.caption('Current snapshot effective date: unknown. Staff verification required.')
             st.caption(f'Data fingerprint: {work.index.dataset_hash[:12]}…')
+            st.caption(f'Policy fingerprint: {work.index.policy_hash[:12]}…')
         else:
             st.caption('SYNTHETIC DEMONSTRATION • no real-data KPIs')
+        from deployment_data import setting
+        st.caption('DATA MODE · '+('DEMO' if work.mode==SYNTHETIC else str(setting('DATA_MODE','LOCAL')).upper()))
+        if st.session_state.get('durable_reviewer'):
+            st.caption('Reviewer · '+str(st.session_state['durable_reviewer'])+' · unverified demo attribution')
+        st.caption('Independent student prototype • not operated by BancABC')
         st.caption('No outreach • no financial approvals')

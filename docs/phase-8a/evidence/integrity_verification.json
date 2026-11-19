@@ -1,0 +1,16 @@
+{
+  "source_files_unchanged": true,
+  "existing_outputs_checked": 190,
+  "changed_existing_outputs": [],
+  "prior_source_bound_acceptance_still_valid": {
+    "source_files_verified": 72,
+    "source_unchanged_during_and_after_run": true,
+    "junit_matches_run_manifest": true,
+    "started_utc": "2026-11-18T09:08:43.681290+00:00",
+    "finished_utc": "2026-11-18T09:09:43.312971+00:00"
+  },
+  "audit_scope": "No training, application/data/model/DB/shared-acceptance changes; audit reports/evidence only.",
+  "alias_key_unchanged_from_phase7": true,
+  "final_report_count": 11,
+  "git_status_only_new_audit_directory": true
+}

@@ -96,8 +96,9 @@ def test_visible_tables_expose_only_alias_identity(app):
 def test_missing_fields_and_source_fallback_are_explicit(tmp_path,monkeypatch):
     missing=tmp_path/'missing.csv';monkeypatch.setenv('BANCINC_FEATURES_PATH',str(missing))
     demo=AppTest.from_file(str(ROOT/'app.py'),default_timeout=120).run()
-    assert not demo.exception and len(demo.warning)==1
-    assert any('SYNTHETIC' in i.value for i in demo.info)
+    assert not demo.exception
+    assert any('DATASET_UNAVAILABLE' in e.value for e in demo.error)
+    assert not any('SYNTHETIC' in i.value for i in demo.info)
     assert not any(m.label=='Total evaluated customers' for m in demo.metric)
     missing.write_text('customer_id\nSYNTHETIC\n')
     invalid=AppTest.from_file(str(ROOT/'app.py'),default_timeout=120).run()

@@ -9,7 +9,7 @@ from engine import evaluate,DEMO_CASES,POLICY_VERSION
 from evidence import holdings,state,KYC_STATES,ACCOUNT_STATES
 from replay import simulate
 from ui_shell import workspace,selected_alias,select_customer,ROOT
-from ui_components import metric_cards,kpis,bars,analytic_filter,paginated,display_number,passport_body,rationale,review_notes,outcome
+from ui_components import metric_cards,kpis,bars,analytic_filter,paginated,display_number,passport_body,rationale,review_notes,outcome,banking_segment_selector,render_savings_evidence,historical_ai_comparison
 from validation_evidence import json_report,test_report,evidence_status
 
 
@@ -37,6 +37,15 @@ def executive_overview():
         metric_cards([('Median historical recency (days)',display_number(m['median_recency_days'])),('Customers with recency >90 days',m['observed_recency_gt90']),('Customers with 4+ events / 180d',m['history_4plus'])],width=290,border=False)
         st.caption('Full-portfolio descriptive indicators at the observation cutoff; no future inactivity prediction.')
     with st.container(horizontal=True):
+      with st.container(width=500,border=True):
+        st.subheader('Relationship activity')
+        metric_cards([('Median activity percentile',display_number(m['median_activity_percentile'],'.0%')),('Median recorded product breadth',display_number(m['median_product_breadth']))],width=210)
+        st.caption('Observed activity proxy and current product breadth; not profitability or lifetime value.')
+      with st.container(width=500,border=True):
+        st.subheader('Product opportunity evidence')
+        metric_cards([('Recorded savings gaps',m['savings_gap_candidates']),('Gap + observed deposit rationale',m['savings_gap_with_rationale'])],width=210)
+        st.caption('Candidate evidence only. All proposed actions still pass through the six gates.')
+    with st.container(horizontal=True):
       with st.container(width=500):bars(distribution(frame,'activity_band','Activity segment'),'Activity segment','Relationship activity segments',key='activity_chart')
       with st.container(width=500):bars(distribution(frame,'savings_gap','Ownership evidence'),'Ownership evidence','Savings ownership evidence',key='gap_chart')
     st.subheader('Why sales actions are withheld')
@@ -50,6 +59,12 @@ def customer_360():
     index,alias=current();p=index.passport(alias)
     frame=portfolio_frame(index);r=frame[frame.customer==alias].iloc[0]
     st.subheader(alias)
+    from segment_context import selected_banking_segment
+    segment=selected_banking_segment(index,alias)
+    with st.container(border=True):
+        st.write('**Banking segment — source-provided snapshot**')
+        st.write(segment['banking_segment'])
+        st.caption(segment['explanation']+' Effective date: unknown.')
     outcome(p['rating'])
     metric_cards([('Qualifying events / 180d',display_number(p['evidence']['events_180d'])),('Historical recency (days)',display_number(p['evidence']['recency_days'])),('Activity percentile',display_number(p['evidence']['relationship_activity_percentile'],'.1%')),('Recorded accounts · snapshot',display_number(r.account_count))])
     with st.container(horizontal=True):
@@ -69,7 +84,7 @@ def customer_360():
 
 
 def inactivity_intelligence():
-    index=workspace().index;frame=analytic_filter(portfolio_frame(index))
+    index=workspace().index;frame=banking_segment_selector(index,analytic_filter(portfolio_frame(index)),'inactivity')
     st.info('Observed recency = whole days from the historical cutoff to the last valid non-fee transaction strictly before it. This is descriptive evidence, not predicted future inactivity.')
     try:
         cutoff=pd.Timestamp(index.cutoff) if isinstance(index.cutoff,str) and re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',index.cutoff) else None
@@ -85,22 +100,23 @@ def inactivity_intelligence():
     filtered=frame[(frame.recency_band==band) if band!='ALL' else pd.Series(True,index=frame.index)]
     if coverage!='ALL':filtered=filtered[filtered.frequency_band==coverage]
     paginated(filtered,['customer','recency_days','qualifying_events_180d','events_90d','frequency_band','rating'],'inactivity',sort=['recency_days','customer'])
+    historical_ai_comparison(index,st.session_state['_feature_path'])
 
 
 def relationship_value():
-    index=workspace().index;frame=analytic_filter(portfolio_frame(index))
+    index=workspace().index;frame=banking_segment_selector(index,analytic_filter(portfolio_frame(index)),'relationship')
     st.info('Relationship activity proxy = percentile rank of the preceding 180-day sum of absolute valid non-fee transaction amounts, across the observation-time cohort (average rank for ties, rounded to four decimals). It measures observed activity, not profitability, revenue or lifetime value.')
     with st.container(horizontal=True):
       with st.container(width=500):bars(distribution(frame,'activity_band','Descriptive segment'),'Descriptive segment','Relationship activity segments',key='relationship_chart')
       with st.container(width=500):bars(distribution(frame,'product_breadth','Recorded product count'),'Recorded product count','Current product breadth',key='breadth_chart')
     st.caption('Descriptive segments: lower <40th percentile; middle 40th–<80th; higher ≥80th. These display bands are not new gate thresholds. Product/account breadth is a current snapshot, not historical prediction evidence.')
-    segment=st.selectbox('Activity segment',['ALL','Higher activity (80th+)','Middle activity (40th–<80th)','Lower activity (<40th)','Unavailable'],key='activity_segment')
+    segment=st.selectbox('Observed activity band',['ALL','Higher activity (80th+)','Middle activity (40th–<80th)','Lower activity (<40th)','Unavailable'],key='activity_segment')
     filtered=frame if segment=='ALL' else frame[frame.activity_band==segment]
     paginated(filtered,['customer','relationship_activity_percentile','transaction_volume_180d_usd','product_breadth','account_count','activity_band','rating'],'relationship',sort=['relationship_activity_percentile','customer'])
 
 
 def product_opportunities():
-    index=workspace().index;full=portfolio_frame(index);frame=analytic_filter(full)
+    index=workspace().index;full=portfolio_frame(index);frame=banking_segment_selector(index,analytic_filter(full),'opportunities')
     st.info('Only Savings Account discussions have a prototype policy. A recorded gap is not verified suitability. Only an engine SUPPORTED case is eligible for staff review; no product offer or customer contact is initiated here.')
     metric_cards([('Recorded savings gaps',int((full.savings_gap=='Gap recorded').sum())),('Gap + recorded behavioural rationale',int(((full.savings_gap=='Gap recorded')&full.has_deposit_rationale).sum())),('Engine-supported staff-review cases',index.counts['SUPPORTED'])],width=310)
     bars(distribution(frame,'savings_gap','Savings ownership'),'Savings ownership','Ownership and gaps',key='opportunity_chart')
@@ -111,6 +127,8 @@ def product_opportunities():
     elif context=='Already-held suppression':filtered=frame[frame.savings_gap=='Already held']
     else:filtered=frame[frame.savings_gap=='Unknown ownership']
     paginated(filtered,['customer','savings_gap','deposit_events_180d','has_deposit_rationale','kyc_status','account_status','rating'],'opportunities')
+    if selected_alias() in set(filtered.customer):render_savings_evidence(index,selected_alias())
+    else:st.info('Selected customer is outside this filtered opportunity table. Selection is retained; choose a customer explicitly to inspect its Savings evidence.')
 
 
 def decision_passport():
@@ -156,6 +174,8 @@ def evidence_replay():
         if held:changed.append('Savings Account')
         overrides['products_held']=changed
     result=simulate(index,alias,overrides)
+    from design_system import replay_highlight
+    replay_highlight(result)
     a,b=st.columns(2)
     with a.container(border=True):st.metric('Baseline decision',result['baseline']['rating']);st.caption('Unmodified validated dataset')
     with b.container(border=True):st.metric('SIMULATED decision',result['simulated']['rating']);st.caption('Counterfactual only • not actionable')
@@ -215,7 +235,7 @@ def audit_validation():
     st.caption('Hashes bind local artifacts; manifests are trusted local build evidence, not externally signed banking attestation. Source reconciliation is checked against the currently loaded feature fingerprint.')
     st.subheader('Recorded automated test evidence')
     available=False
-    for path in [ROOT/'outputs/phase5/tests.xml',ROOT/'outputs/phase4/tests.xml',ROOT/'outputs/phase3/tests.xml',ROOT/'outputs/phase2/tests.xml']:
+    for path in [ROOT/'outputs/phase7/tests.xml',ROOT/'outputs/phase6/tests.xml',ROOT/'outputs/phase5/tests.xml',ROOT/'outputs/phase4/tests.xml',ROOT/'outputs/phase3/tests.xml',ROOT/'outputs/phase2/tests.xml']:
         report=test_report(path)
         if report:
             available=True
@@ -223,7 +243,8 @@ def audit_validation():
     if not available:st.info('No readable, internally reconciled test report is available. No passing test count is assumed.')
     st.caption('Counts above come from parsed JUnit artifacts. A past run is not an automatic certification of the current source revision; rerun validation after changes.')
     st.subheader('Known limits and required controls')
-    st.write('• Current snapshots have no verified effective date.\n• Descriptive activity proxies are not profitability or future predictions.\n• No trained model or reproduced performance evaluation is available.\n• Evidence Replay is a controlled simulation, not a transaction-level historical replay.\n• Legacy notes are session-only. Durable local review events are available; no authenticated staff authorization or bank approval is implemented.\n• No customer outreach or financial action is connected.')
+    st.write('• Current snapshots have no verified effective date.\n• Descriptive activity proxies are not profitability or future predictions.\n• Historical experimental evaluation is available when its artifact is verified; approved live fitted inference is unavailable.\n• Evidence Replay is a controlled simulation, not a transaction-level historical replay.\n• Legacy notes are session-only. Durable local review events are available; no authenticated staff authorization or bank approval is implemented.\n• No customer outreach or financial action is connected.')
+    historical_ai_comparison(index,st.session_state['_feature_path'])
     from ui_review import render_audit_history
     render_audit_history(index)
     st.subheader('Legacy session notes — not bank approvals')

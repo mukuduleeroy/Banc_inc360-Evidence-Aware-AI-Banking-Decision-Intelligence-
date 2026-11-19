@@ -16,3 +16,10 @@ outputs/
 # SQLite sidecars also remain private if a custom database is outside outputs.
 *.db-wal
 *.db-shm
+
+# Streamlit credentials must never enter the deployment Git tree.
+.streamlit/secrets.toml
+.streamlit/secrets.*.toml
+private_data/
+# This template contains documentation placeholders only.
+!.streamlit/secrets.example.toml

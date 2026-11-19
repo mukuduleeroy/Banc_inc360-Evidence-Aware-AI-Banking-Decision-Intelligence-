@@ -34,7 +34,7 @@ The default is `outputs/customer_features.csv`. Set `BANCINC_FEATURES_PATH` to o
 export BANCINC_FEATURES_PATH=/absolute/path/to/customer_features.csv
 ```
 
-`.env.example` documents the variable; the app does not automatically load `.env`. Missing features produce guidance and clearly labeled synthetic gate demonstrations. Invalid schema or unreadable features produce a coded error. A matching `.manifest.json` sidecar is required for real recommendations; missing/mismatched provenance withholds all sales cases.
+`.env.example` documents the variable; the app does not automatically load `.env`. Missing features stop real-data loading with an actionable error; synthetic gate demonstrations require deliberate selection or DATA_MODE=DEMO. Invalid schema or unreadable features produce a coded error. A matching `.manifest.json` sidecar is required for real recommendations; missing/mismatched provenance withholds all sales cases.
 
 Rebuild from the authorized original ZIP:
 
@@ -110,3 +110,17 @@ Reproduce UI evidence and actual aggregate metrics:
 ```
 
 The separately verified local preview is `http://127.0.0.1:8502`. Browser screenshots and a Chrome/CDP verification helper are documented in the Phase 3 walkthrough; they use existing Chrome and Node, with no new package. All artifacts/screenshots stay in ignored outputs and should be reviewed before external sharing.
+
+## Phase 6 deployment data safety
+
+Use explicit `DATA_MODE=LOCAL`, `DEPLOYED` or `DEMO` (LOCAL is the compatible default). Public demo: `DATA_MODE=DEMO`, `BANCINC_RUNTIME=CLOUD`. Real deployments require verified written BancABC permission, a privately provisioned versioned artifact and configured fingerprint/version/alias secret. Missing real data never silently becomes demo. Cloud SQLite is labeled ephemeral; local audit remains unchanged. No competition data was published. See [deployment audit](docs/PHASE_6_DEPLOYMENT_AUDIT.md), [parity evidence](docs/PHASE_6_DATA_PARITY_REPORT.md) and [configuration guide](docs/PHASE_6_DEPLOYMENT_GUIDE.md). A nonsecret template is in `.streamlit/secrets.example.toml`; never commit actual secrets or private_data.
+
+## Phase 7 visual refinement
+
+The original student prototype now uses centralized banking-blue design tokens, accessible reading/status colors, a clear independent-student identity, responsive KPI/gate cards and labeled replay comparisons. No official bank assets or external font dependencies were added. **308 tests passed**, all 291 previous cases retained; 36 route/viewport combinations passed at 1440/1280/768/390px, and local review survived an actual server restart. Protected engine, data, review and evaluation artifacts remain unchanged.
+
+See [visual audit](docs/PHASE_7_VISUAL_AUDIT.md), [design system](docs/PHASE_7_DESIGN_SYSTEM.md), [implementation](docs/PHASE_7_IMPLEMENTATION_REPORT.md) and [validation](docs/PHASE_7_VISUAL_VALIDATION.md). Private captures are indexed at `outputs/phase7/presentation_evidence/README.md`. Local visual preview: http://127.0.0.1:8507 (isolated visual-demo database). Public competition-data release remains unauthorized.
+
+## Mandatory final regression and gate protection
+
+Every integrated improvement must pass the complete regression suite and source-bound acceptance before presentation. Run `.venv/bin/python scripts/run_final_regression.py --out-dir outputs/final_acceptance/run-new` with an unused directory. The runner rejects failures, errors, skips, removed baseline tests, changed source/JUnit evidence and unexpected full-population decision changes. Experimental models remain offline; product suggestions and scores cannot bypass G1–G6. See [protection requirements](docs/DECISION_INTEGRITY_PROTECTION.md) and [final acceptance](docs/FINAL_ACCEPTANCE_REPORT.md). This is local technical acceptance, not production authorization or permission to publish competition data.

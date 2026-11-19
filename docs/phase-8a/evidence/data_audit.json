@@ -1,0 +1,342 @@
+{
+  "local_customers": 50000,
+  "decision_counts": {
+    "SUPPORTED": 2052,
+    "CAUTION": 20,
+    "ABSTAIN": 47928
+  },
+  "decision_fingerprint": "7b0b071c768b393a51d249fedf45937b5bd17f845a72dcaa23a5447c2b6fc0e3",
+  "feature_sha256": "a66035aade8bf2aa7be0bb4f50481211391ffe9473bce8b3afc60b9400498993",
+  "policy_sha256": "fb55bf63040711dd15f03005cd298472743899c186e59315396422a0d970f1ae",
+  "feature_segment_labels": {
+    "Corporate": {
+      "customers": 2500,
+      "outcomes": {
+        "ABSTAIN": 2374,
+        "SUPPORTED": 126
+      },
+      "recorded_savings_gaps": 2500,
+      "gap_with_rationale": 760,
+      "holdings_counts": {
+        "Foreign Currency Account": 2500,
+        "Digital Banking": 1669,
+        "Credit Card": 640,
+        "SME Working Capital": 205,
+        "Personal Loan": 213,
+        "Mortgage": 205
+      },
+      "median_provided_usd_volume_180d": 7240.875
+    },
+    "NGO/NPO": {
+      "customers": 2500,
+      "outcomes": {
+        "ABSTAIN": 2374,
+        "SUPPORTED": 123,
+        "CAUTION": 3
+      },
+      "recorded_savings_gaps": 2500,
+      "gap_with_rationale": 764,
+      "holdings_counts": {
+        "Digital Banking": 1679,
+        "Fixed Deposit": 2500,
+        "Personal Loan": 203,
+        "SME Working Capital": 217,
+        "Credit Card": 650,
+        "Mortgage": 212
+      },
+      "median_provided_usd_volume_180d": 7322.674999999999
+    },
+    "Retail": {
+      "customers": 40000,
+      "outcomes": {
+        "ABSTAIN": 38468,
+        "SUPPORTED": 1517,
+        "CAUTION": 15
+      },
+      "recorded_savings_gaps": 30000,
+      "gap_with_rationale": 9419,
+      "holdings_counts": {
+        "Digital Banking": 26667,
+        "Fixed Deposit": 7500,
+        "Credit Card": 9980,
+        "Foreign Currency Account": 7500,
+        "Call Deposit": 7500,
+        "Personal Loan": 5803,
+        "Savings Account": 10000,
+        "Current Account": 7500,
+        "Mortgage": 3376,
+        "SME Working Capital": 834
+      },
+      "median_provided_usd_volume_180d": 7385.280000000001
+    },
+    "SME": {
+      "customers": 2500,
+      "outcomes": {
+        "ABSTAIN": 2348,
+        "SUPPORTED": 150,
+        "CAUTION": 2
+      },
+      "recorded_savings_gaps": 2500,
+      "gap_with_rationale": 777,
+      "holdings_counts": {
+        "Call Deposit": 2500,
+        "Credit Card": 622,
+        "Digital Banking": 1680,
+        "Mortgage": 193,
+        "Personal Loan": 230,
+        "SME Working Capital": 200
+      },
+      "median_provided_usd_volume_180d": 7473.075
+    },
+    "Trust": {
+      "customers": 2500,
+      "outcomes": {
+        "ABSTAIN": 2364,
+        "SUPPORTED": 136
+      },
+      "recorded_savings_gaps": 2500,
+      "gap_with_rationale": 797,
+      "holdings_counts": {
+        "Current Account": 2500,
+        "Digital Banking": 1638,
+        "Credit Card": 608,
+        "Personal Loan": 218,
+        "SME Working Capital": 210,
+        "Mortgage": 181
+      },
+      "median_provided_usd_volume_180d": 7237.275
+    }
+  },
+  "recognized_product_labels": [
+    "Call Deposit",
+    "Credit Card",
+    "Current Account",
+    "Digital Banking",
+    "Fixed Deposit",
+    "Foreign Currency Account",
+    "Mortgage",
+    "Personal Loan",
+    "SME Working Capital",
+    "Savings Account"
+  ],
+  "feature_observed_product_labels": {
+    "Foreign Currency Account": 10000,
+    "Digital Banking": 33333,
+    "Credit Card": 12500,
+    "SME Working Capital": 1666,
+    "Personal Loan": 6667,
+    "Mortgage": 4167,
+    "Fixed Deposit": 10000,
+    "Call Deposit": 10000,
+    "Savings Account": 10000,
+    "Current Account": 10000
+  },
+  "analytics_public_frame_has_banking_segment": false,
+  "portfolio_metrics": {
+    "evaluated": 50000,
+    "input_rows": 50000,
+    "excluded": 0,
+    "invalid": 0,
+    "SUPPORTED": 2052,
+    "CAUTION": 20,
+    "ABSTAIN": 47928,
+    "observed_recency_gt90": 26734,
+    "history_4plus": 31455,
+    "savings_gap_candidates": 40000,
+    "savings_gap_with_rationale": 12517,
+    "median_recency_days": 107.0,
+    "median_events_180d": 8.0,
+    "median_activity_percentile": 0.5,
+    "median_product_breadth": 2.0
+  },
+  "abstention_reasons": [
+    {
+      "Reason code": "CURRENT_RESTRICTION",
+      "Customers": 39928
+    },
+    {
+      "Reason code": "NO_BEHAVIOURAL_EVIDENCE",
+      "Customers": 27483
+    },
+    {
+      "Reason code": "HISTORY_INSUFFICIENT",
+      "Customers": 17391
+    },
+    {
+      "Reason code": "PRODUCT_ALREADY_HELD",
+      "Customers": 10000
+    },
+    {
+      "Reason code": "HISTORY_BORDERLINE",
+      "Customers": 1134
+    }
+  ],
+  "source": {
+    "headers": [
+      "Date",
+      "Account ID",
+      "Customer ID",
+      "Transaction ID",
+      "Branch ID",
+      "Email",
+      "Type",
+      "Amount (USD)",
+      "Status",
+      "dr_cr_indicator",
+      "currency",
+      "amount",
+      "exchange_rate_per_usd",
+      "channel",
+      "merchant_id",
+      "balance_after",
+      "transaction_date",
+      "legal_name",
+      "customer_segment",
+      "gender",
+      "date_of_birth_or_establishment",
+      "national_id_or_registration",
+      "city",
+      "province",
+      "mobile_number",
+      "onboarding_date",
+      "risk_rating",
+      "kyc_status",
+      "estimated_monthly_income_usd",
+      "customer_status",
+      "account_customer_id",
+      "account_home_branch_id",
+      "account_type",
+      "account_currency",
+      "account_opened_date",
+      "account_status",
+      "account_current_balance",
+      "account_interest_rate_pct",
+      "account_digital_enabled_flag",
+      "branch_name",
+      "branch_city",
+      "branch_province",
+      "branch_opened_date",
+      "branch_status",
+      "merchant_name",
+      "merchant_category",
+      "merchant_city",
+      "merchant_province",
+      "merchant_segment",
+      "merchant_status",
+      "rate_date",
+      "units_per_usd_mid_rate",
+      "units_per_usd_sell_rate",
+      "rate_source",
+      "service_reasons",
+      "last_service_interaction",
+      "products_held",
+      "loan_types",
+      "card_types",
+      "card_schemes",
+      "last_digital_session",
+      "digital_channels_used",
+      "customer_currencies",
+      "customer_last_transaction"
+    ],
+    "rows": 1048575,
+    "customer_segment_conflicts": 0,
+    "customer_holdings_conflicts": 0,
+    "customer_segment_row_counts": {
+      "Retail": 838871,
+      "Trust": 52421,
+      "SME": 52430,
+      "NGO/NPO": 52424,
+      "Corporate": 52429
+    },
+    "currencies": {
+      "EUR": 209715,
+      "ZAR": 209715,
+      "USD": 209715,
+      "GBP": 209715,
+      "ZWG": 209715
+    },
+    "account_currencies": {
+      "EUR": 209715,
+      "GBP": 209715,
+      "ZAR": 209715,
+      "ZWG": 209715,
+      "USD": 209715
+    },
+    "statuses": {
+      "Completed": 1048575
+    },
+    "transaction_types": {
+      "SERVICE FEE": 174763,
+      "FOREX_PURCHASE": 174763,
+      "CASH_DEPOSIT": 174763,
+      "POS_PURCHASE": 174762,
+      "ATM_WITHDRAWAL": 174762,
+      "BILL_PAYMENT": 174762
+    },
+    "dr_cr_indicator": {
+      "DR": 873812,
+      "CR": 174763
+    },
+    "rate_sources": {
+      "Synthetic treasury reference rate": 1048575
+    },
+    "invalid_or_nonpositive_rates": 0,
+    "missing_rates": 0,
+    "invalid_raw_amounts": 0,
+    "invalid_provided_usd": 0,
+    "invalid_rate_dates": 0,
+    "rate_date_differs_from_transaction_date": 0,
+    "currency_reconciliation": {
+      "EUR": {
+        "rows": 209715,
+        "legacy_vs_amount_div_rate_diff_gt_one_cent": 0,
+        "max_abs_difference": 0.010000000000104592,
+        "legacy_usd_total": 210734815.15,
+        "derived_usd_total": 210734816.20853382,
+        "rate_matches_mid": 209715,
+        "rate_matches_sell": 0
+      },
+      "GBP": {
+        "rows": 209715,
+        "legacy_vs_amount_div_rate_diff_gt_one_cent": 0,
+        "max_abs_difference": 0.010000000000218279,
+        "legacy_usd_total": 210803667.95,
+        "derived_usd_total": 210803665.15703103,
+        "rate_matches_mid": 209715,
+        "rate_matches_sell": 0
+      },
+      "USD": {
+        "rows": 209715,
+        "legacy_vs_amount_div_rate_diff_gt_one_cent": 0,
+        "max_abs_difference": 0.010000000000104592,
+        "legacy_usd_total": 210749380.35,
+        "derived_usd_total": 210749375.69952756,
+        "rate_matches_mid": 209715,
+        "rate_matches_sell": 0
+      },
+      "ZAR": {
+        "rows": 209715,
+        "legacy_vs_amount_div_rate_diff_gt_one_cent": 0,
+        "max_abs_difference": 0.0,
+        "legacy_usd_total": 210780662.75,
+        "derived_usd_total": 210780662.71834132,
+        "rate_matches_mid": 209715,
+        "rate_matches_sell": 0
+      },
+      "ZWG": {
+        "rows": 209715,
+        "legacy_vs_amount_div_rate_diff_gt_one_cent": 0,
+        "max_abs_difference": 0.0,
+        "legacy_usd_total": 210774795.55,
+        "derived_usd_total": 210774795.42802638,
+        "rate_matches_mid": 209715,
+        "rate_matches_sell": 0
+      }
+    },
+    "historical_180d_qualifying_rows": 315445,
+    "historical_180d_provided_usd_abs_sum": 316964804.53,
+    "historical_180d_raw_div_rate_abs_sum": 316964802.26046145,
+    "canonical_180d_provided_usd_abs_sum": 316964804.53
+  },
+  "source_feature_segment_mismatches": 0
+}
