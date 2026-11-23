@@ -1,4 +1,6 @@
 """Banc-Inc360 entry point: native navigation over the validated Phase 2 workspace."""
+import os
+from urllib.parse import urlsplit
 import streamlit as st
 from data_access import FeatureValidationError
 from ui_shell import Workspace,PAGES,REAL,SYNTHETIC,ROOT,selection_controls,provenance
@@ -46,3 +48,25 @@ st.caption('BANC-INC360 / EVIDENCE-AWARE BANKING INTELLIGENCE')
 st.title(page.title)
 st.caption('Human review required • privacy-safe presentation • no automatic outreach or financial approvals')
 page.run()
+
+with st.sidebar.container(key='companion_links'):
+    st.html('<style>.st-key-companion_links [data-testid="stPageLink-NavLink"] p {white-space: normal;}</style>')
+    st.divider()
+    st.caption('ADDITIONAL CAPABILITIES')
+    for label, variable, default, explanation in (
+        ('Dataset Ingestion & Refresh', 'BANCINC_INGESTION_URL', 'http://127.0.0.1:8511',
+         'Separate companion; activation does not update the original dashboards.'),
+        ('Business Capability Companion', 'BANCINC_BUSINESS_URL', 'http://127.0.0.1:8515',
+         'Separate companion; synthetic upselling is not an approved operational banking decision.'),
+    ):
+        url = os.environ.get(variable, default).strip()
+        try:
+            target = urlsplit(url)
+            valid = target.scheme in ('http', 'https') and bool(target.hostname) and not target.username and not target.password
+            valid = valid and (target.port is None or 1 <= target.port <= 65535)
+        except ValueError:
+            valid = False
+        if valid:
+            st.page_link(url, label=label, help=explanation)
+        else:
+            st.warning(f'{label}: set {variable} to a valid HTTP(S) URL.')
