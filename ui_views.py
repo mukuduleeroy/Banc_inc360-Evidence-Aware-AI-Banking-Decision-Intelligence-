@@ -22,7 +22,7 @@ def current():
 
 def executive_overview():
     index=workspace().index
-    st.caption('An evidence-first view of the full customer portfolio. Permissions describe staff-review eligibility, never bank approval.')
+    st.caption('Portfolio outcomes indicate staff-review eligibility, not bank approval.')
     kpis(index)
     frame=analytic_filter(portfolio_frame(index));m=metrics(index)
     with st.container(horizontal=True):
@@ -78,14 +78,14 @@ def customer_360():
         st.dataframe(pd.DataFrame({'Check':['Customer status','Account status','KYC','Recorded product breadth'],'Value':[r.customer_status,r.account_status,r.kyc_status,display_number(r.product_breadth)]}),hide_index=True,width='stretch')
         st.write('**Products:**',', '.join(r.products) if r.products else 'Explicitly empty portfolio' if r.products==() else 'Ownership evidence unavailable')
         st.caption('Snapshot effective date is unknown. These fields do not reconstruct historical eligibility.')
-    st.info('Missing or invalid evidence is shown as unavailable and blocks recommendations; it is never filled with invented customer facts.')
+    st.caption('Unavailable evidence can withhold a recommendation. Inspect the Decision Passport before proceeding.')
     st.page_link('views/decision_passport.py',label='Inspect this customer’s six-gate Decision Passport',icon=':material/fact_check:')
     st.page_link('views/evidence_replay.py',label='Try a labeled evidence simulation',icon=':material/science:')
 
 
 def inactivity_intelligence():
     index=workspace().index;frame=banking_segment_selector(index,analytic_filter(portfolio_frame(index)),'inactivity')
-    st.info('Observed recency = whole days from the historical cutoff to the last valid non-fee transaction strictly before it. This is descriptive evidence, not predicted future inactivity.')
+    st.caption('Historical Analysis • days since the last qualifying transaction. Observed inactivity is not a prediction of churn.')
     try:
         cutoff=pd.Timestamp(index.cutoff) if isinstance(index.cutoff,str) and re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',index.cutoff) else None
         if cutoff is not None and pd.isna(cutoff):cutoff=None
@@ -105,7 +105,7 @@ def inactivity_intelligence():
 
 def relationship_value():
     index=workspace().index;frame=banking_segment_selector(index,analytic_filter(portfolio_frame(index)),'relationship')
-    st.info('Relationship activity proxy = percentile rank of the preceding 180-day sum of absolute valid non-fee transaction amounts, across the observation-time cohort (average rank for ties, rounded to four decimals). It measures observed activity, not profitability, revenue or lifetime value.')
+    st.caption('Historical Analysis • relationship activity ranks qualifying transaction turnover over 180 days. Activity is not profitability, revenue or lifetime value.')
     with st.container(horizontal=True):
       with st.container(width=500):bars(distribution(frame,'activity_band','Descriptive segment'),'Descriptive segment','Relationship activity segments',key='relationship_chart')
       with st.container(width=500):bars(distribution(frame,'product_breadth','Recorded product count'),'Recorded product count','Current product breadth',key='breadth_chart')
@@ -117,7 +117,7 @@ def relationship_value():
 
 def product_opportunities():
     index=workspace().index;full=portfolio_frame(index);frame=banking_segment_selector(index,analytic_filter(full),'opportunities')
-    st.info('Only Savings Account discussions have a prototype policy. A recorded gap is not verified suitability. Only an engine SUPPORTED case is eligible for staff review; no product offer or customer contact is initiated here.')
+    st.caption('Savings opportunities require supporting evidence and all six checks. SUPPORTED permits staff review, not an offer or customer contact.')
     metric_cards([('Recorded savings gaps',int((full.savings_gap=='Gap recorded').sum())),('Gap + recorded behavioural rationale',int(((full.savings_gap=='Gap recorded')&full.has_deposit_rationale).sum())),('Engine-supported staff-review cases',index.counts['SUPPORTED'])],width=310)
     bars(distribution(frame,'savings_gap','Savings ownership'),'Savings ownership','Ownership and gaps',key='opportunity_chart')
     context=st.selectbox('Opportunity context',['Supported staff review','Gap candidates · not an offer','Already-held suppression','Unknown ownership'],key='opportunity_context')
@@ -143,7 +143,7 @@ def reset_simulation():
 
 def evidence_replay():
     index,alias=current();base=index.customer_values(alias);baseline=index.passport(alias)
-    st.warning('CONTROLLED SIMULATION — modified values are what-if assumptions, not customer facts. This view does not replay source transactions, save overrides, record bank approval or initiate actions.')
+    st.caption('Simulated Eligibility Change • what-if assumptions, not customer facts. Changes are not saved and cannot authorize action.')
     context=(index.dataset_hash,index.policy_hash,alias)
     if st.session_state.get('replay_context')!=context:
         reset_simulation();st.session_state['replay_context']=context
@@ -197,7 +197,7 @@ def manager_work_queue():
     search=st.text_input('Filter presentation identifier',placeholder='C-…',key='alias_filter').strip()
     from ui_review import queue_status
     matches=queue_status(index.table(lane,search),index)
-    local_state=st.selectbox('Local case status',['ALL','NOT_OPENED','OPEN','INVESTIGATION_REQUIRED','DEFERRED','APPROVED_LOCAL','REJECTED','STALE'],key='local_case_filter')
+    local_state=st.selectbox('Review case status',['ALL','NOT_OPENED','OPEN','INVESTIGATION_REQUIRED','DEFERRED','APPROVED_LOCAL','REJECTED','STALE'],key='local_case_filter')
     if local_state!='ALL':matches=matches[matches.case_status==local_state]
     st.caption('Engine eligibility remains separate from local review state. APPROVED_LOCAL is not bank authorization or permission to contact a customer.')
     size=workspace().page_size;pages=max(1,math.ceil(len(matches)/size))

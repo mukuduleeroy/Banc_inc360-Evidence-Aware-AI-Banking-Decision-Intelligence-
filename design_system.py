@@ -29,6 +29,8 @@ def stylesheet():
  [data-testid="stSidebar"] {{border-right:1px solid var(--banc-border);}}
  [data-testid="stSidebar"] [data-testid="stCaptionContainer"], [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {{color:var(--banc-sidebar-muted)!important;}}
  [data-testid="stSidebarNav"] a {{border-radius:8px;min-height:36px;}}
+ [data-testid="stNavSectionHeader"] {{height:auto!important;min-height:2rem;}}
+ [data-testid="stNavSectionHeader"] > span {{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere;line-height:1.4;}}
  [data-testid="stSidebarNav"] a[aria-current="page"] {{background:var(--banc-primary);border-left:3px solid var(--banc-accent);}}
  [data-testid="stSidebarNav"] a span {{white-space:normal!important;overflow-wrap:anywhere;overflow:visible!important;text-overflow:clip!important;line-height:1.4;}}
  [class*="st-key-kpi_"] {{background:var(--banc-surface);border:1px solid var(--banc-border);border-radius:12px;border-top:3px solid var(--banc-primary);padding:14px 16px;box-shadow:0 3px 12px rgba(16,40,63,.035);}}
@@ -41,6 +43,7 @@ def stylesheet():
  [data-testid="stMetricValue"] {{font-variant-numeric:tabular-nums;}}
  [data-testid="stDataFrame"] {{border:1px solid var(--banc-border);border-radius:10px;}}
  [data-testid="stExpander"] {{background:var(--banc-surface);border-color:var(--banc-border);border-radius:10px;}}
+ [data-testid="stSidebar"] [data-testid="stExpander"] {{background:var(--banc-navy);border-color:var(--banc-sidebar-muted);}}
  [data-testid="stButton"] button,[data-testid="stFormSubmitButton"] button {{min-height:44px;border-radius:8px;max-width:100%;}}
  [data-testid="stButton"] button p,[data-testid="stFormSubmitButton"] button p {{white-space:normal!important;overflow-wrap:anywhere;}}
  button:focus-visible,a:focus-visible,input:not([role="combobox"]):focus-visible,textarea:focus-visible,[data-baseweb="select"]:focus-within {{outline:3px solid var(--banc-accent)!important;outline-offset:3px;}}
@@ -71,8 +74,8 @@ def stylesheet():
 
 def apply_design():st.html(stylesheet())
 
-def identity(mode):
- st.html('<div class="banc-identity"><span class="banc-wordmark">BANC-INC360</span><span class="banc-student">Independent student hackathon prototype · not operated by BancABC</span><span class="banc-mode">'+escape(mode)+'</span></div>')
+def identity(mode=None):
+ st.html('<div class="banc-identity"><span class="banc-wordmark">Banc-Inc360</span><span class="banc-student">Customer Intelligence &amp; Decision Support</span></div>')
 
 def gate_cards(gates):
  cards=[]
@@ -92,3 +95,13 @@ def replay_highlight(result):
    rows=''.join('<p><strong>'+escape(allowed[f])+':</strong> '+escape(str(values.get(f,'Unavailable')))+'</p>' for f in fields if f in allowed)
    return '<div><strong>'+title+'</strong>'+rows+'</div>'
   st.html('<section class="banc-comparison" aria-label="Changed evidence comparison">'+column(baseline,'Baseline · source evidence')+column(simulated,'SIMULATED · counterfactual')+'</section>')
+
+
+def system_information():
+ with st.expander('About / System Information'):
+  st.write('Banc-Inc360 is an independent demonstration system, not operated by BancABC and not a production banking service.')
+  st.write('Source-derived analysis uses the supplied historical competition extract. Customer identifiers are masked; display and distribution still require permission. Current snapshot effective dates are unknown.')
+  st.write('SUPPORTED means eligible for staff review under the implemented prototype rules, not bank approval. Six-gate checks remain authoritative. Reviewer identities are demonstration labels, not authenticated bank staff.')
+  st.write('Historical machine learning evaluates future recorded inactivity, not confirmed churn. No approved live inference or calibrated customer churn probabilities are available. Activity percentiles are not profitability or lifetime value.')
+  st.write('Illustrative upgrade scenarios use entirely synthetic customers and hypothetical Standard-to-Premium tiers, not BancABC-approved products or eligibility policies. Simulations change copies only.')
+  st.write('Data Management uses a separate dataset registry; activation never updates the original dashboards. Business Opportunities does not write operational reviews. No customer outreach or financial action is connected.')

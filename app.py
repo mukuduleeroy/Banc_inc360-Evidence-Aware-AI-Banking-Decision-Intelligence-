@@ -6,7 +6,7 @@ from data_access import FeatureValidationError
 from ui_shell import Workspace,PAGES,REAL,SYNTHETIC,ROOT,selection_controls,provenance
 
 st.set_page_config(page_title='Banc-Inc360 | Banking Intelligence',layout='wide',initial_sidebar_state='expanded')
-from design_system import apply_design,identity
+from design_system import apply_design,identity,system_information
 apply_design()
 st.logo(str(ROOT/'assets/brand.svg'),size='large')
 if 'audit' not in st.session_state:st.session_state.audit=[]
@@ -43,10 +43,21 @@ else:
     size=25;lane='ALL'
 work=Workspace(index,mode,size,lane);st.session_state['_workspace']=work
 provenance(work)
-identity('DEMO' if mode==SYNTHETIC else config.mode)
-st.caption('BANC-INC360 / EVIDENCE-AWARE BANKING INTELLIGENCE')
+identity()
+
 st.title(page.title)
-st.caption('Human review required • privacy-safe presentation • no automatic outreach or financial approvals')
+descriptions = {
+    'executive_overview': 'Review portfolio engagement, relationship activity and cases requiring attention.',
+    'customer_360': 'Explore customer activity and account relationships. Inspect the supporting Decision Passport.',
+    'inactivity_intelligence': 'Identify changes in recorded engagement and review customers with sufficient history.',
+    'relationship_value': 'Compare historical relationship activity and identify customers for further value review.',
+    'product_opportunities': 'Review potential Savings opportunities and inspect the evidence supporting each case.',
+    'decision_passport': 'Examine the six decision checks and complete the required evidence review.',
+    'evidence_replay': 'Explore a simulated eligibility change, compare the outcome and reset to source evidence.',
+    'manager_work_queue': 'Prioritize eligible cases, inspect evidence and record a reasoned human review.',
+    'audit_validation': 'Inspect data quality, decision provenance and the review audit trail.',
+}
+st.caption(descriptions.get(next((slug for slug, title, _ in PAGES if title==page.title), ''), 'Explore an illustrative scenario using synthetic evidence.'))
 page.run()
 
 with st.sidebar.container(key='companion_links'):
@@ -54,9 +65,9 @@ with st.sidebar.container(key='companion_links'):
     st.divider()
     st.caption('ADDITIONAL CAPABILITIES')
     for label, variable, default, explanation in (
-        ('Dataset Ingestion & Refresh', 'BANCINC_INGESTION_URL', 'http://127.0.0.1:8511',
+        ('Data Management', 'BANCINC_INGESTION_URL', 'http://127.0.0.1:8511',
          'Separate companion; activation does not update the original dashboards.'),
-        ('Business Capability Companion', 'BANCINC_BUSINESS_URL', 'http://127.0.0.1:8515',
+        ('Business Opportunities', 'BANCINC_BUSINESS_URL', 'http://127.0.0.1:8515',
          'Separate companion; synthetic upselling is not an approved operational banking decision.'),
     ):
         url = os.environ.get(variable, default).strip()
@@ -70,3 +81,6 @@ with st.sidebar.container(key='companion_links'):
             st.page_link(url, label=label, help=explanation)
         else:
             st.warning(f'{label}: set {variable} to a valid HTTP(S) URL.')
+
+with st.sidebar:
+    system_information()

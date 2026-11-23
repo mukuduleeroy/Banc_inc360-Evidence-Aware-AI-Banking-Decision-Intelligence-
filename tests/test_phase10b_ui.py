@@ -42,7 +42,7 @@ def test_proxy_filters_pagination_empty_and_global_scope(app):
     app.selectbox(key='p10b_segment').select('SME').run();assert not app.exception
     assert app.number_input(key='p10b_page').value==1 and set(app.dataframe[0].value.banking_segment)=={'SME'}
     assert {m.label:m.value for m in app.metric}==metrics
-    app.selectbox(key='p10b_segment').select('Unknown').run();assert app.dataframe[0].value.empty and any('No source-derived customers' in i.value for i in app.info)
+    app.selectbox(key='p10b_segment').select('Unknown').run();assert app.dataframe[0].value.empty and any('No customers match these filters' in i.value for i in app.info)
     app.selectbox(key='p10b_segment').select('All').run();assert app.selectbox(key='p10b_value_alias').value==alias
     assert app.dataframe[0].value.equals(first)
 

@@ -23,7 +23,7 @@ def app(tmp_path,monkeypatch):
     return a,tmp_path/'private'
 
 def test_complete_validate_process_preview_activate_inspect_rollback(app):
-    a,path=app;assert a.title[0].value=='Dataset Ingestion & Refresh'
+    a,path=app;assert a.title[0].value=='Data Management'
     assert a.button(key='p9_process').disabled
     a.button(key='p9_validate').click().run();assert not a.exception
     assert a.session_state['p9_validation']['valid']
@@ -71,7 +71,7 @@ def test_real_uploader_api_renders_with_transport_limit(tmp_path,monkeypatch):
     original=st.get_option
     monkeypatch.setattr(st,'get_option',lambda key:5 if key=='server.maxUploadSize' else original(key))
     a=AppTest.from_file(str(ROOT/'phase9_app.py'),default_timeout=120).run()
-    assert not a.exception and a.title[0].value=='Dataset Ingestion & Refresh'
+    assert not a.exception and a.title[0].value=='Data Management'
     assert a.button(key='p9_process').disabled
 
 

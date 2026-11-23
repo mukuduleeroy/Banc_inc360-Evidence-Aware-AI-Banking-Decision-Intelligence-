@@ -21,7 +21,7 @@ def storage_notice():
         st.error(exc.code+': '+str(exc));return
     if cloud:
         st.warning('EPHEMERAL CLOUD REVIEW STORAGE — local SQLite may be lost on restart or redeployment. Cloud durability is not verified. Demo attribution only; do not enter personal information.')
-    else:st.caption('LOCAL SQLITE REVIEW STORAGE — persists on this local filesystem; retain backups. Not authenticated bank approval.')
+    else:st.caption('Review history is retained on this device; keep backups. Review records are not authenticated bank approval.')
 def store():return AuditStore(database_path())
 def service(storage):return ReviewService(storage,features_path=st.session_state['_feature_path'])
 
@@ -48,9 +48,9 @@ def queue_status(frame,index):
 def render_workflow(index,alias):
     if workspace().mode!=REAL:
         st.caption('Durable real-case review is unavailable in synthetic or simulation mode.');return
-    st.subheader('Durable human review — local prototype only')
+    st.subheader('Human review')
     storage_notice()
-    st.caption('SQLite-backed local review events survive restarts on retained storage. Demo reviewer labels are unverified attribution, not login, identity verification or bank authorization. No review outcome initiates outreach or a financial action.')
+    st.caption('Review history is retained when storage is preserved. Demonstration reviewer identities are unverified; recording an outcome does not authorize bank activity or customer contact.')
     try:
         storage=store();reviews=service(storage);context=reviews.current(alias);case=storage.case_for_customer(alias)
         reviewers=storage.reviewers();labels={r['reviewer_id']:r['reviewer_id']+' · '+r['display_name']+' (unverified)' for r in reviewers}
@@ -81,7 +81,7 @@ def render_workflow(index,alias):
         options=['Approve','Defer','Reject'] if context.passport['rating']=='SUPPORTED' else ['Defer','Reject']
         if context.passport['rating']!='SUPPORTED':st.info('CAUTION/ABSTAIN: approval is unavailable. Investigate, defer or reject; do not treat this as a sales recommendation.')
         with st.form('durable_review_form'):
-            action=st.selectbox('Local prototype review outcome',options,key='durable_action')
+            action=st.selectbox('Review outcome',options,key='durable_action')
             reason=st.text_area('Required review reason — no personal data or credentials',key='durable_reason',max_chars=2000)
             acknowledged=st.checkbox('I inspected this current six-gate Passport and understand this is not authenticated bank approval.',key='durable_ack')
             save=st.form_submit_button('Save durable review',key='save_durable_review',disabled=reviewer is None or current_status=='STALE')

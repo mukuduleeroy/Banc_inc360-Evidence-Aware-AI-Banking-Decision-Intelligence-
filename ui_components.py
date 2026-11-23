@@ -94,7 +94,7 @@ def passport_body(p,notes=False,simulated=False):
     gate_cards(p['gates'])
     st.dataframe(pd.DataFrame(p['gates']),hide_index=True,width='stretch',key='passport_gates')
     st.write('**Reason codes:**',', '.join(p['reason_codes']) or 'All evidence gates passed')
-    st.caption('Method: deterministic rules • policy '+p['policy_version']+' • no trained model used or approved')
+    st.caption('Requires Human Review • decision policy '+p['policy_version']+' • evidence-based rules')
     with st.expander('Evidence and provenance',expanded=False):
         evidence=dict(p['evidence']);evidence['behavioural_reason']=rationale(evidence.get('behavioural_reason'))
         st.json(evidence)
@@ -109,7 +109,7 @@ def passport_body(p,notes=False,simulated=False):
 
 def review_notes(p):
     st.subheader('Session review notes')
-    st.caption('Session-only • not authenticated bank approval • no outreach or financial action. Avoid personal data in free-text notes.')
+    st.caption('Notes remain in this session. They are not bank approval or a saved review. Avoid personal information.')
     context=(workspace().mode,p['customer_id'],p.get('lineage',{}).get('dataset_sha256'),p['policy_version'])
     if st.session_state.get('_review_context')!=context:
         st.session_state['_review_context']=context
@@ -121,7 +121,7 @@ def review_notes(p):
         if not reason.strip():st.error('Reason required')
         else:
             st.session_state.audit.append({'utc':datetime.now(timezone.utc).isoformat(),'customer':p['customer_id'],'source':workspace().mode,'dataset_sha256':p.get('lineage',{}).get('dataset_sha256'),'policy_version':p['policy_version'],'passport':p['rating'],'reason_codes':p['reason_codes'],'staff_decision':choice,'reason':reason})
-            st.success('Recorded in local session; no outreach or financial approval performed')
+            st.success('Session note recorded. No customer contact or financial action was taken.')
     st.dataframe(pd.DataFrame(st.session_state.audit),hide_index=True,width='stretch',key='session_audit')
 
 
@@ -146,7 +146,7 @@ def savings_opportunity_evidence(index,alias):
 def render_savings_evidence(index,alias):
     e=savings_opportunity_evidence(index,alias)
     with st.expander('Savings evidence — selected customer',expanded=True):
-        st.warning('This is a prototype Savings discussion opportunity for staff review, not an approved banking offer or customer-contact authorization.')
+        st.caption('Requires Human Review • Savings discussion candidate, not an approved offer or permission to contact the customer.')
         st.write('**Selected customer:**',e['customer'])
         st.write('**Current known holdings:**',', '.join(e['products']) if e['products'] else 'Explicitly empty portfolio' if e['products']==() else 'Unavailable ownership evidence')
         st.write('**Recorded Savings gap:**','Yes' if e['savings_gap'] is True else 'No' if e['savings_gap'] is False else 'Unavailable')

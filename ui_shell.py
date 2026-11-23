@@ -8,15 +8,15 @@ ROOT=Path(__file__).resolve().parent
 REAL='BancABC historical extract'
 SYNTHETIC='Synthetic gate demonstrations'
 PAGES=(
- ('executive_overview','Executive Overview','Portfolio'),
- ('customer_360','Customer 360','Customer intelligence'),
- ('inactivity_intelligence','Inactivity Intelligence','Customer intelligence'),
- ('relationship_value','Relationship Value Intelligence','Customer intelligence'),
- ('product_opportunities','Product Opportunity Intelligence','Customer intelligence'),
- ('decision_passport','Decision Passport','Decisions'),
- ('evidence_replay','Evidence Replay','Decisions'),
- ('manager_work_queue','Manager Work Queue','Decisions'),
- ('audit_validation','Audit & Validation Evidence','Assurance'),
+ ('executive_overview','Executive Overview','OVERVIEW'),
+ ('customer_360','Customer 360','OVERVIEW'),
+ ('inactivity_intelligence','Inactivity Intelligence','CUSTOMER INTELLIGENCE'),
+ ('relationship_value','Relationship Value Intelligence','CUSTOMER INTELLIGENCE'),
+ ('product_opportunities','Product Opportunity Intelligence','CUSTOMER INTELLIGENCE'),
+ ('decision_passport','Decision Passport','DECISION MANAGEMENT'),
+ ('evidence_replay','Evidence Replay','DECISION MANAGEMENT'),
+ ('manager_work_queue','Manager Work Queue','DECISION MANAGEMENT'),
+ ('audit_validation','Audit & Validation Evidence','GOVERNANCE'),
 )
 
 @dataclass(frozen=True)
@@ -64,19 +64,7 @@ def selection_controls(index):
 
 def provenance(work):
     with st.sidebar:
-        st.divider()
-        st.caption('PRESENTATION MODE • aliases only')
-        if work.mode==REAL:
-            st.caption('COMPETITION DATA • validated feature extract' if not work.index.lineage_issues else 'UNVERIFIED IMPORT • recommendations withheld')
-            st.write('Historical cutoff',work.index.cutoff)
-            st.caption('Current snapshot effective date: unknown. Staff verification required.')
-            st.caption(f'Data fingerprint: {work.index.dataset_hash[:12]}…')
-            st.caption(f'Policy fingerprint: {work.index.policy_hash[:12]}…')
-        else:
-            st.caption('SYNTHETIC DEMONSTRATION • no real-data KPIs')
-        from deployment_data import setting
-        st.caption('DATA MODE · '+('DEMO' if work.mode==SYNTHETIC else str(setting('DATA_MODE','LOCAL')).upper()))
-        if st.session_state.get('durable_reviewer'):
-            st.caption('Reviewer · '+str(st.session_state['durable_reviewer'])+' · unverified demo attribution')
-        st.caption('Independent student prototype • not operated by BancABC')
-        st.caption('No outreach • no financial approvals')
+        if work.mode!=REAL:
+            st.caption('Illustrative Scenario • synthetic customer evidence')
+        elif work.index.lineage_issues:
+            st.warning('Data provenance requires attention; recommendations are withheld.')
